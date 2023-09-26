@@ -1,3 +1,8 @@
+body{
+    background-color: #333;
+}
+
+
 footer {
     position: fixed;
     bottom: 0;
@@ -8,25 +13,8 @@ footer {
     text-align: center;
     padding: 10px; /* İstenilen boşluk ve kenar boşluğu ayarları */
   }
-  
-  .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .footer-content input {
-    width: 70%; /* Metin kutusu genişliği */
-    padding: 5px;
-  }
-  
-  .footer-content button {
-    background-color: #007bff; /* Düğme arkaplan rengi */
-    color: #fff; /* Düğme metin rengi */
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-  }
+
+
 
 
   .chat span{
@@ -39,5 +27,29 @@ footer {
   }
   .otherTxt{
     color: #333;
+  }
+  
+
+
+  #sidebar {
+    position: fixed;
+    height: 100%;
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding-top: 20px;
+  }
+  
+  .sidebar-header {
+    text-align: center;
+  }
+  
+  .list-unstyled li {
+    padding: 10px;
+  }
+  
+  .list-unstyled a {
+    color: #fff;
+    text-decoration: none;
   }
   

@@ -3,28 +3,61 @@
         <title>Log In</title>
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     </head>
 
 
     <body>
 
-       <!-- chat room -->
-       <div class="chat">
-           
+      <!-- active users -->
+      <div class="container-fluid p-0">
+        <div class="row">
+          <div class="col-md-3">
+            <!-- Sidebar -->
+            <nav id="sidebar">
+              <div class="sidebar-header">
+                <h3>Aktif Kullanıcılar</h3>
+              </div>
+              <ul class="list-unstyled components">
+                <li>
+                  <a href="#">Test</a>
+                </li>
+                
+              </ul>
+            </nav>
+          </div>
+          <div class="col-md-9">
+            <!-- Form -->
+            <div class="chat">
+
+            </div>
+            <footer>
+                <div class="footer-content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="text" id="getMessage" class="form-control" placeholder="Metin kutusu">
+                            </div>
+                            <div class="col-4">
+                                <button id="sendMessage" class="btn btn-success form-control">Gönder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
 
 
-       </div>
+
+          </div>
+        </div>
+      </div>
+      
+
+       <!-- chat-->
+     
       
 
 
-       <!-- footer input.. -->
-       <footer>
-        <div class="footer-content">
-          <input type="text" id="getMessage" placeholder="Metin kutusu">
-          <button id="sendMessage">Mesaj Gönder</button>
-        </div>
-      </footer>
       
 
 
@@ -36,7 +69,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="/login.js"></script>
+
 
 
 
@@ -50,7 +83,7 @@
     }
 
 
-    let socket = io("http://localhost:3000",{ transports : ['websocket'] });
+    let socket = io("http://localhost:3000",{ transports : ['websocket'],closeOnBeforeunload:false,query: {session:sessionStorage.getItem('sessionID')} });
 
 
     $(document).on('click','#sendMessage',function(e){
@@ -65,15 +98,25 @@
 
     socket.on('chat message', function(msg) {
         let name = sessionStorage.getItem('chatName');
-
         if(name == msg.name){
             $(".chat").append("<span> <b class='meTxt'> Ben: </b> "+msg.message+"</span>");
         }else{
             $(".chat").append("<span> <b class='otherTxt'> "+msg.name+": </b> "+msg.message+"</span>");
         }
-
-       console.log(msg);
+        $(".chat").append("<hr>");
     });
+
+    socket.on('active users', function(msg) {
+        let activeUsers = msg["activeUsers"];
+        console.log(activeUsers[0]);
+        $(".list-unstyled").html('');
+        for(let i = 0; i < activeUsers.length; i++) {
+            console.log(activeUsers[i]);
+            $(".list-unstyled").append("<li><a href='#'>"+activeUsers[i]+"</a></li>");
+        }
+    });
+
+
 
 
     </script>
