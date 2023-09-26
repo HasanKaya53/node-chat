@@ -1,0 +1,43 @@
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; /* Footer arkaplan rengi */
+    color: #fff; /* Footer metin rengi */
+    text-align: center;
+    padding: 10px; /* İstenilen boşluk ve kenar boşluğu ayarları */
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .footer-content input {
+    width: 70%; /* Metin kutusu genişliği */
+    padding: 5px;
+  }
+  
+  .footer-content button {
+    background-color: #007bff; /* Düğme arkaplan rengi */
+    color: #fff; /* Düğme metin rengi */
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+
+  .chat span{
+    display: block;
+    margin: 5px 0;
+  }
+  
+  .meTxt{
+    color: #007bff;
+  }
+  .otherTxt{
+    color: #333;
+  }
+  
