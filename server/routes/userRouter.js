@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-
+var uid = require('uid-safe')
 
 
 router.get('/',(req,res)=>{
@@ -21,7 +21,7 @@ router.get('/chat',(req,res)=>{
 
 
 router.post('/login',(req,res)=>{
-    let session = req.sessionID;
+    let session = uid.sync(18);
     res.json({success:true,message:'logged in',session:session});
 });
 

@@ -1,46 +1,55 @@
 $(document).ready(function() {
-    let socket = io("http://localhost:3000",{ transports : ['websocket'],query: { session: sessionStorage.getItem('sessionID') } });
-
-
-    $(document).on('click','#submit', function() {
-
     
 
 
+    $(document).on('click','#submit', async function() {
 
 
         let name = $("#chatName").val();
-
-        
-
+        let roomName = $("#roomName").val();
         //request post...
 
-        $.ajax({
-            url: '/login',
-            type: 'POST',
-            dataType: 'json',
-            data: { a: "örnek", b: true },
-            success: function (gelenveri) {
-                console.log(gelenveri);
-                sessionStorage.setItem('sessionID', gelenveri.session);
-            },
-            error: function (hata) {
-                console.log(hata);
-            }
+
+        sessionStorage.clear();
+
+
+     
+
+        // jq post...
+        let sessionID = "";
+        let teklifSorgu = new Promise((resolve, reject) => { 
+            $.post('/login', { name: name,roomName:roomName }, function (data) {
+                sessionID = data.session;
+                sessionStorage.setItem('sessionID', sessionID);
+                
+                resolve(sessionID); 
+            });
         });
 
-        socket.emit('userLogin', { name: name,session:sessionStorage.getItem('sessionID') });
+        await Promise.all([teklifSorgu]);
 
+        console.log(sessionID);
+
+
+
+      
+
+
+    
+       
+        console.log(sessionID);
+      
+
+   
         if (name.trim() === '') {
             alert('Please enter your name.');
             return false;
         }
-
-
         //storage ...
+     
         sessionStorage.setItem('chatName', name);
+        sessionStorage.setItem('roomName', roomName);
         location.href = '/chat';
-        console.log('logged ..');
     });
 
 

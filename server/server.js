@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
+const redis = require('redis');
 const app = express();
+var uid = require('uid-safe')
 
 const http = require('http');
 const server = http.createServer(app);
@@ -14,6 +16,20 @@ app.set('view engine', 'ejs');
 app.set('views', './view');
 
 
+
+
+
+const sessionMiddleware = session({
+
+    secret: "fsad124asdfasdfs45343_5322asdfaSFAA",
+    resave: false,
+    saveUninitialized: true,
+  });
+  
+app.use(sessionMiddleware);
+
+
+const client = redis.createClient();
 
 
 const userRouter = require('./routes/userRouter');

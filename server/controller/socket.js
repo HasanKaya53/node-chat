@@ -2,13 +2,24 @@
 
 // const { Server } = require("socket.io");
 // const io = new Server(server);
-
+const Redis = require('ioredis');
 
 class createSocket
 {
     constructor(io)
     {
         this.io = io;
+    }
+
+    async getSessionData(socketID){
+        const redis = new Redis();
+        let sessionData = {};
+        await redis.hgetall("socket:"+socketID, function (err, result) {
+            sessionData = result;
+        });
+
+        return sessionData;
+
     }
 
     getActiveUsers(activeUsers,nowUser){
@@ -28,41 +39,48 @@ class createSocket
     socketEvents()
     {
         let activeUsers = [];
+        let activeUsersEmet = [];
         this.io.on('connection', (socket) => {
 
-            
-            let sessionToken = socket.handshake.query['session'];
-            socket.id = sessionToken ? sessionToken : socket.id;
+
+            const redis = new Redis();
+
+            console.log(socket.handshake.query);
+            socket.id = socket.handshake.query["session"];
+            let userName = socket.handshake.query["name"];
+            let chatRoom = socket.handshake.query["chatRoom"];
 
 
-            console.log('Kullanıcı bağlandı .. '+socket.id);
+
+            console.log(socket.id+" "+userName+" "+chatRoom);
+          
+
+
+         
+    
             socket.on('userLogin', (msg) => {
-                console.log('userLogin : '+msg.name);
-                activeUsers.push({id:socket.id,name:msg.name});
-                //create session...
-                socket.handshake.query["user"] = {name:msg.name};
-                console.log(socket.handshake.query["user"]);
+                if(activeUsersEmet.includes(socket.id)) return false;
+                activeUsers.push({id:socket.id,name:userName});
+                redis.hmset("socket:"+socket.id, {socketId:socket.id,name:userName});
+                socket.emit('userLogin', { name: userName, message: userName }); // This will emit the event to all connected sockets
             });
 
 
 
-            socket.on('message', (msg) => {
-                this.io.emit('chat message', { name: msg.name, message: msg.message }); // This will emit the event to all connected sockets
+            socket.on('message', async (msg) => {
+                let sessionData = await this.getSessionData(socket.id);
+                console.log(sessionData);
+                this.io.emit('chat message', { name: userName, message: msg.message });
             });
-
-
-
 
             socket.on('disconnect', () => {
-                console.log('Bağlantı Kesildi.. '+socket.id);
+
                 let activeUsersList = this.getActiveUsers(activeUsers,socket.handshake.query["user"]);
-                this.io.emit('active users', { activeUsers: activeUsersList,'test':'test' }); // This will emit the event to all connected sockets
+                this.io.emit('active users', { activeUsers: activeUsersList}); // This will emit the event to all connected sockets
             });
             let activeUsersList = this.getActiveUsers(activeUsers,socket.handshake.query["user"]);
             this.io.emit('active users', { activeUsers: activeUsersList }); // This will emit the event to all connected sockets
 
-            //if id is not in activeUsers array then add it
-            //if id is in activeUsers array then remove it
 
             
 
