@@ -5,7 +5,7 @@ const path = require('path');
 
 
 router.get('/',(req,res)=>{
-    res.send('user router');
+    res.render('login');
 });
 
 
