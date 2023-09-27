@@ -20,7 +20,7 @@
               </div>
               <ul class="list-unstyled components">
                 <li>
-                  <a href="#">Test</a>
+
                 </li>
                 
               </ul>
@@ -73,15 +73,36 @@
     <script>
 
     let name = sessionStorage.getItem('chatName');
+    let sessionID = sessionStorage.getItem('sessionID');
+    let roomName = sessionStorage.getItem('roomName');
 
     if(name == null || name == undefined){
         window.location.href = "./login";
     }
 
+   
 
-    let socket = io("http://localhost:3000",{ transports : ['websocket'] ,query: {session:sessionStorage.getItem('sessionID'),name:sessionStorage.getItem('chatName'),chatRoom:sessionStorage.getItem('roomName')} });
-    console.log({session:sessionStorage.getItem('sessionID'),name:sessionStorage.getItem('chatName'),chatRoom:sessionStorage.getItem('roomName')});
 
+
+    let socket = io("http://localhost:3000",{ transports : ['websocket'] ,query: {session:sessionID,name:name,chatRoom:roomName} });
+
+    
+
+    $(document).on('keyup','#getMessage',function(e){
+        console.log(e);
+        if(e.which == 13) {
+            let message = $("#getMessage").val();
+            let name = sessionStorage.getItem('chatName');
+
+            $('#getMessage').val('');
+
+            socket.emit('message', {message: message, name: name});
+        }
+
+        let textLength = $("#getMessage").val().length;
+        socket.emit('typing', {textLength: textLength, name: name});
+        
+    });
 
 
 
@@ -92,6 +113,22 @@
         $('#getMessage').val('');
 
         socket.emit('message', {message: message, name: name});
+    });
+
+
+    socket.on('typing', function(msg) {
+        console.log(msg);
+        let name = sessionStorage.getItem('chatName');
+        if(name != msg.name){
+            if(msg.textLength > 0 && $("#"+msg.name).length==0){
+                $(".chat").append("<span> <b class='otherTxt typingText' id='"+msg.name+"'> "+msg.name+" yazıyor... </b> </span>");
+            }else{
+                if(msg.textLength == 0){
+                    $("#"+msg.name).remove();
+                }
+               
+            }
+        }
     });
 
 

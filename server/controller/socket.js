@@ -70,6 +70,11 @@ class createSocket
                 this.io.emit('chat message', { name: userName, message: msg.message });
             });
 
+
+            socket.on('typing', (msg) => {
+                this.io.emit('typing', { name: userName, textLength: msg.textLength });
+            });
+
             socket.on('disconnect', () => {
 
                 let activeUsersList = this.getActiveUsers(activeUsers);
