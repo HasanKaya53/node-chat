@@ -28,17 +28,7 @@ $(document).ready(function() {
 
         await Promise.all([teklifSorgu]);
 
-        console.log(sessionID);
-
-
-
-      
-
-
-    
-       
-        console.log(sessionID);
-      
+        
 
    
         if (name.trim() === '') {
@@ -49,6 +39,11 @@ $(document).ready(function() {
      
         sessionStorage.setItem('chatName', name);
         sessionStorage.setItem('roomName', roomName);
+
+        let socket = io("http://localhost:3000",{ transports : ['websocket'] ,query: {session:sessionStorage.getItem('sessionID'),name:sessionStorage.getItem('chatName'),chatRoom:sessionStorage.getItem('roomName')} });
+        socket.emit('userLogin', { name: sessionStorage.getItem('chatName'), message: sessionStorage.getItem('chatName') });
+
+
         location.href = '/chat';
     });
 

@@ -22,14 +22,15 @@ class createSocket
 
     }
 
-    getActiveUsers(activeUsers,nowUser){
+    getActiveUsers(activeUsers){
         let activeUsersList = [];
 
 
         activeUsers.forEach((user)=>{
+            console.log(user);
             if(user.name == undefined) return;
             if(user.name == null) return;
-            if(user.name == nowUser) return;
+
             activeUsersList.push(user.name);
         });
 
@@ -45,16 +46,11 @@ class createSocket
 
             const redis = new Redis();
 
-            console.log(socket.handshake.query);
+
             socket.id = socket.handshake.query["session"];
             let userName = socket.handshake.query["name"];
             let chatRoom = socket.handshake.query["chatRoom"];
-
-
-
-            console.log(socket.id+" "+userName+" "+chatRoom);
-          
-
+            
 
          
     
@@ -65,6 +61,7 @@ class createSocket
                 socket.emit('userLogin', { name: userName, message: userName }); // This will emit the event to all connected sockets
             });
 
+  
 
 
             socket.on('message', async (msg) => {
@@ -75,10 +72,12 @@ class createSocket
 
             socket.on('disconnect', () => {
 
-                let activeUsersList = this.getActiveUsers(activeUsers,socket.handshake.query["user"]);
+                let activeUsersList = this.getActiveUsers(activeUsers);
                 this.io.emit('active users', { activeUsers: activeUsersList}); // This will emit the event to all connected sockets
             });
-            let activeUsersList = this.getActiveUsers(activeUsers,socket.handshake.query["user"]);
+
+
+            let activeUsersList = this.getActiveUsers(activeUsers);
             this.io.emit('active users', { activeUsers: activeUsersList }); // This will emit the event to all connected sockets
 
 

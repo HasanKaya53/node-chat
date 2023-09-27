@@ -106,19 +106,20 @@
     });
 
     socket.on('active users', function(msg) {
+        console.log(msg);
         let activeUsers = msg["activeUsers"];
-        console.log(activeUsers[0]);
         $(".list-unstyled").html('');
         for(let i = 0; i < activeUsers.length; i++) {
-            console.log(activeUsers[i]);
-            $(".list-unstyled").append("<li><a href='#'>"+activeUsers[i]+"</a></li>");
+            if(activeUsers[i] == sessionStorage.getItem('chatName')){
+                $(".list-unstyled").append("<li><a href='#' class='activeUser'>Siz</a></li>");
+            }else{
+                $(".list-unstyled").append("<li><a href='#'>"+activeUsers[i]+"</a></li>");
+            }
+           
         }
     });
 
     socket.on('test', function(msg) {
-        console.log(msg);
-    });
-    socket.on(sessionStorage.getItem('sessionID'), function(msg) {
         console.log(msg);
     });
 
